@@ -22,16 +22,35 @@ whole point of a legal assistant.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    Q["User question"] --> B["Query bridge<br/>gemini-2.5-flash<br/>plain language to legal terms"]
-    B --> K["BM25 keyword<br/>SQLite FTS5"]
-    B --> V["Dense semantic<br/>bge-m3 + FAISS"]
-    K --> F["RRF fusion"]
-    V --> F
-    F --> R["Optional reranker<br/>off by default"]
-    R --> G["Answer generation<br/>deepseek-chat<br/>grounded and cited"]
-    G --> A["Answer with citations"]
+```
+                        User question
+                              |
+                              v
+              +-----------------------------+
+              |        Query bridge         |   plain language -> legal terms
+              |     (gemini-2.5-flash)      |
+              +-----------------------------+
+                              |
+                 +------------+------------+
+                 v                         v
+          BM25 keyword               Dense semantic
+          (SQLite FTS5)              (bge-m3 + FAISS)
+                 |                         |
+                 +------------+------------+
+                              v
+                          RRF fusion
+                              |
+                              v
+              Optional reranker  (off by default)
+                              |
+                              v
+              +-----------------------------+
+              |      Answer generation      |   grounded, cited, abstains
+              |       (deepseek-chat)       |
+              +-----------------------------+
+                              |
+                              v
+                Answer with article citations
 ```
 
 **Data pipeline** (conceptual): scrape mevzuat.gov.tr → OCR scanned PDFs → parse documents into
