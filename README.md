@@ -24,15 +24,14 @@ whole point of a legal assistant.
 
 ```mermaid
 flowchart LR
-    Q[User question] --> B[Query bridge<br/>gemini-2.5-flash<br/>plain language → legal terms]
-    B --> H{Hybrid retrieval}
-    H --> K[BM25 keyword<br/>SQLite FTS5]
-    H --> V[Dense semantic<br/>bge-m3 + FAISS]
-    K --> F[RRF fusion]
+    Q["User question"] --> B["Query bridge<br/>gemini-2.5-flash<br/>plain language to legal terms"]
+    B --> K["BM25 keyword<br/>SQLite FTS5"]
+    B --> V["Dense semantic<br/>bge-m3 + FAISS"]
+    K --> F["RRF fusion"]
     V --> F
-    F --> R[(optional reranker<br/>bge-reranker, off by default)]
-    R --> G[Answer generation<br/>deepseek-chat<br/>grounded, cited, abstains]
-    G --> A[Answer with article citations]
+    F --> R["Optional reranker<br/>off by default"]
+    R --> G["Answer generation<br/>deepseek-chat<br/>grounded and cited"]
+    G --> A["Answer with citations"]
 ```
 
 **Data pipeline** (conceptual): scrape mevzuat.gov.tr → OCR scanned PDFs → parse documents into
