@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mevzuat Asistanı</title>
+<style>
+  :root{--mor:#534AB7;--metin:#2C2C2A;--soluk:#6b6a66;--cizgi:#E2E0D8;--kart:#fff;--arka:#F7F6F1;
+    --yesil:#3f7d58;--yesil-bg:#eaf5ee;--sari:#b9860b;--sari-bg:#fbf3d8;--kirmizi:#c0392b;--mavi:#2b6cb0;
+    --cekince-bg:#fff7e6;--cekince-cz:#f0dca8;--cekince-mt:#7a5b12;--btn2:#f0eef8;--uyari-bg:#fdecea;--uyari-cz:#e3b4ad}
+  html[data-tema="koyu"]{
+    --mor:#a99cf5;--metin:#e7e5df;--soluk:#a3a19a;--cizgi:#33333c;--kart:#1e1e24;--arka:#16161a;
+    --yesil:#5cae7a;--yesil-bg:#18301f;--sari:#d9a441;--sari-bg:#2e2410;--kirmizi:#e0685a;--mavi:#5b8fd0;
+    --cekince-bg:#2a2410;--cekince-cz:#4a3f1a;--cekince-mt:#d9b755;--btn2:#2a2838;--uyari-bg:#331a17;--uyari-cz:#5a2c26}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--arka);color:var(--metin);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+  .sar{max-width:820px;margin:0 auto;padding:28px 18px 90px}
+  h1{font-size:22px;margin:0 0 2px}
+  .altbaslik{color:var(--soluk);font-size:13px;margin:0 0 14px}
+  .altbaslik a{color:var(--mor)}
+  .cekince{background:var(--cekince-bg);border:1px solid var(--cekince-cz);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--cekince-mt);margin-bottom:16px}
+  form{display:flex;gap:8px;margin-bottom:12px}
+  textarea{flex:1;border:1px solid var(--cizgi);border-radius:9px;padding:12px 14px;font-size:15px;background:var(--kart);color:var(--metin);resize:vertical;min-height:52px;font-family:inherit}
+  textarea:focus{outline:2px solid #C9C5F0;border-color:var(--mor)}
+  button{background:var(--mor);color:#fff;border:0;border-radius:9px;padding:0 22px;font-size:15px;font-weight:600;cursor:pointer;align-self:flex-start;height:52px}
+  button:disabled{opacity:.5;cursor:default}
+  .durum{color:var(--soluk);font-size:12.5px;margin:6px 2px 0;min-height:16px}
+  .cevap{background:var(--kart);border:1px solid var(--cizgi);border-radius:12px;padding:18px 20px;white-space:pre-wrap;font-size:15.5px;margin-top:8px;min-height:8px}
+  .cevap:empty{display:none}
+  .cevap .atif{background:var(--yesil);border-radius:4px;padding:0 5px;font-weight:600;font-size:12.5px;cursor:pointer;color:#fff}
+  .gerekce-var{background:var(--yesil-bg);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .gerekce-yok{background:var(--sari-bg);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .aciklama{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:11.5px;color:var(--soluk)}
+  .aciklama span{display:inline-flex;align-items:center;gap:5px}
+  .nk{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .bolum{margin-top:26px}
+  .bolum h2{font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--soluk);margin:0 0 10px}
+  .kaynak{background:var(--kart);border:1px solid var(--cizgi);border-radius:10px;padding:11px 14px;margin-bottom:8px;font-size:14px}
+  .kaynak.kul{border-color:var(--yesil);border-left:4px solid var(--yesil)}
+  .kaynak.mulga{border-left:4px solid var(--kirmizi)}
+  .kaynak .no{display:inline-block;min-width:24px;font-weight:700;color:var(--mor)}
+  .kaynak .ad{font-weight:600}
+  .kaynak .bas{color:var(--soluk)}
+  .kaynak .ozet{color:var(--soluk);font-size:12.5px;margin-top:4px}
+  .kaynak a{color:inherit;text-decoration:none}
+  .kaynak a:hover .ad{text-decoration:underline}
+  details{margin-top:22px}
+  summary{cursor:pointer;color:var(--soluk);font-size:13px;user-select:none}
+  .rz{display:inline-block;color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:.02em}
+  .rz-kul{background:var(--yesil)} .rz-mulga{background:var(--kirmizi)} .rz-degisik{background:var(--mavi)}
+  .gb{margin-top:22px;padding:12px 14px;background:var(--kart);border:1px solid var(--cizgi);border-radius:10px;display:none;align-items:center;flex-wrap:wrap;gap:10px;font-size:13.5px;color:var(--soluk)}
+  .gb.acik{display:flex}
+  .gb-btn{background:var(--btn2);color:var(--mor);border:1px solid var(--cizgi);height:34px;width:44px;padding:0;font-size:17px;border-radius:8px}
+  .gb-btn.sec{background:var(--mor);border-color:var(--mor)}
+  .gb input{border:1px solid var(--cizgi);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;flex:1;min-width:160px;height:34px}
+  .gb .tsk{color:var(--yesil);font-weight:600}
+  /* örnek sorular + geçmiş */
+  .ornekler{display:flex;flex-wrap:wrap;gap:7px;margin:-4px 0 16px}
+  .ornekler .et{font-size:11.5px;color:var(--soluk);width:100%;margin-bottom:-2px}
+  .ornek,.gec-c{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 13px;font-size:12.5px;color:var(--metin);cursor:pointer;text-align:left;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ornek:hover,.gec-c:hover{border-color:var(--mor);color:var(--mor)}
+  .gecmis{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}
+  .gecmis .gec-bas{font-size:11.5px;color:var(--soluk);width:100%;margin-bottom:-2px}
+  /* kaynak inline aç */
+  .k-bas{cursor:pointer}
+  .k-ok{display:inline-block;color:var(--soluk);font-size:11px;width:12px;transition:transform .15s}
+  .kaynak.acik .k-ok{transform:rotate(90deg)}
+  .k-tam{margin-top:8px;padding-top:8px;border-top:1px solid var(--cizgi);font-size:13.5px;color:var(--metin);white-space:normal;line-height:1.55}
+  .k-link{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--mor);text-decoration:none;font-weight:500}
+  .k-link:hover{text-decoration:underline}
+  /* yükleniyor göstergesi */
+  .durum .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--cizgi);border-top-color:var(--mor);border-radius:50%;animation:don .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes don{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.durum .spin{animation:none}}
+  /* mülga/iptal özet uyarısı (cevap üstünde) */
+  .uyari-mulga{background:var(--uyari-bg);border:1px solid var(--uyari-cz);border-left:4px solid var(--kirmizi);
+    border-radius:8px;padding:9px 13px;font-size:13px;color:var(--metin);margin:8px 0 0;display:none}
+  .uyari-mulga.acik{display:block}
+  /* susma / boş durum */
+  .susma{background:var(--sari-bg);border:1px solid var(--cizgi);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--metin);margin-top:8px}
+  /* araç çubuğu: kopyala + tema */
+  .arac{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+  .arac button{background:var(--btn2);color:var(--mor);border:1px solid var(--cizgi);height:32px;padding:0 12px;
+    font-size:12.5px;font-weight:500;border-radius:8px;cursor:pointer}
+  .arac button:hover{border-color:var(--mor)}
+  .tema{position:fixed;top:14px;right:16px;background:var(--kart);border:1px solid var(--cizgi);color:var(--soluk);
+    width:36px;height:36px;border-radius:9px;font-size:16px;cursor:pointer;z-index:5}
+</style>
+</head>
+<body>
+<button class="tema" id="tema" title="Açık/Koyu tema">🌙</button>
+<div class="sar">
+  <h1>Mevzuat Asistanı</h1>
+  <p class="altbaslik">Sorunuzu gündelik dille yazın — ilgili kanun maddelerine dayanarak yanıtlar. · <a href="/ara">madde arama</a></p>
+  <div class="cekince">⚖️ Bu asistan <b>bilgilendirme</b> amaçlıdır, hukuki tavsiye değildir. Somut olay için avukata danışın.</div>
+  <form id="f">
+    <textarea id="q" placeholder="Örn: Kiracı depozitosunu kira bitiminde geri alabilir mi?" autofocus></textarea>
+    <button id="b" type="submit">Sor</button>
+  </form>
+  <div class="ornekler" id="ornekler">
+    <span class="et">Örnek sorular</span>
+    <button class="ornek">Kiracı depozitosunu kira bitiminde geri alabilir mi?</button>
+    <button class="ornek">İşten haksız çıkarıldım, kıdem tazminatı alabilir miyim?</button>
+    <button class="ornek">Apartmanda yönetici seçmek zorunlu mu?</button>
+  </div>
+  <div class="gecmis" id="gecmis"></div>
+  <div class="durum" id="durum"></div>
+  <div class="uyari-mulga" id="uyarimulga">⚠ Bu yanıtın dayandığı maddelerden biri <b>yürürlükten kalkmış (mülga)</b> olabilir — güncel durumu mevzuat.gov.tr'de veya bir avukatla teyit edin.</div>
+  <div class="cevap" id="cevap"></div>
+  <div class="arac" id="arac" style="display:none"><button id="kopyala">📋 Kopyala</button></div>
+  <div class="aciklama" id="aciklama" style="display:none">
+    <span><i class="nk" style="background:var(--yesil-bg);border:1px solid var(--yesil)"></i> maddeye dayalı</span>
+    <span><i class="nk" style="background:var(--sari-bg);border:1px solid var(--sari)"></i> modelin kendi bilgisi (teyit edin)</span>
+    <span><i class="nk" style="background:var(--kirmizi)"></i> mülga</span>
+    <span><i class="nk" style="background:var(--mavi)"></i> değişik</span>
+  </div>
+  <div class="gb" id="gb">
+    <span>Bu cevap yeterli mi?</span>
+    <button class="gb-btn" data-v="iyi" title="Yeterli">👍</button>
+    <button class="gb-btn" data-v="kotu" title="Yetersiz">👎</button>
+    <input id="gbmadde" placeholder="Doğru madde (ops.): örn. TBK 342">
+    <span class="tsk" id="gbtsk"></span>
+  </div>
+  <div id="kaynaklar"></div>
+</div>
+<script>
+const f=document.getElementById('f'), q=document.getElementById('q'), b=document.getElementById('b');
+const cevapEl=document.getElementById('cevap'), durumEl=document.getElementById('durum'), kEl=document.getElementById('kaynaklar');
+const gbEl=document.getElementById('gb'), gbTsk=document.getElementById('gbtsk'), gbMadde=document.getElementById('gbmadde'), aciklamaEl=document.getElementById('aciklama');
+let es=null, sonSoru='', sonCevap='', sonAlan='';
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function atifla(t){return esc(t).replace(/\[(\d{1,3})\]/g,'<span class="atif" data-no="$1">[$1]</span>');}
+
+// Dayanaklı (yeşil) vs dayanaksız (sarı) — SATIR bazında.
+// Her bent/satır bir iddiadır: içinde [N] atıf varsa tümü yeşil (maddeye dayalı),
+// yoksa ve dolu bir cümleyse sarı (modelin kendi eklemesi). Başlıklar nötr.
+// Satır bazı, çok-cümleli iddiaları ve "Madde 17." gibi numara-nokta bölmelerini çözer.
+function isaretle(raw){
+  return raw.split('\n').map(line=>{
+    if(!line.trim()) return '';
+    if(/^\s*(İLGİLİ MADDELER|CEVAP|Eksik kalan nokta)\s*:?/i.test(line)) return atifla(line);
+    if(/\[\d{1,3}\]/.test(line)) return '<span class="gerekce-var">'+atifla(line)+'</span>';
+    if(line.trim().length>18) return '<span class="gerekce-yok">'+atifla(line)+'</span>';
+    return atifla(line);
+  }).join('\n');
+}
+
+f.addEventListener('submit',e=>{
+  e.preventDefault();
+  const soru=q.value.trim(); if(!soru) return;
+  if(es) es.close();
+  cevapEl.textContent=''; kEl.innerHTML=''; b.disabled=true;
+  gbEl.className='gb'; aciklamaEl.style.display='none'; gbTsk.textContent=''; gbMadde.value='';
+  document.getElementById('uyarimulga').className='uyari-mulga';
+  document.getElementById('arac').style.display='none';
+  durumEl.innerHTML='<span class="spin"></span>İlgili maddeler aranıyor…';
+  sonSoru=soru; gecmisKaydet(soru); let ham='', ilk=true;
+  es=new EventSource('/api/cevap?q='+encodeURIComponent(soru));
+  es.onmessage=ev=>{
+    const d=JSON.parse(ev.data);
+    if(d.tip==='parca'){ if(ilk){ilk=false; durumEl.innerHTML='<span class="spin"></span>Yanıt yazılıyor…';} ham+=d.metin; cevapEl.innerHTML=atifla(ham); }
+    else if(d.tip==='son'){ sonCevap=ham; sonAlan=d.alan||''; bitir(d,ham); es.close(); b.disabled=false; }
+    else if(d.tip==='hata'){ durumEl.textContent='Hata: '+d.mesaj; es.close(); b.disabled=false; }
+  };
+  es.onerror=()=>{ durumEl.textContent='Bağlantı kesildi.'; if(es)es.close(); b.disabled=false; };
+});
+
+function bitir(d,ham){
+  const s=d.sure;
+  durumEl.textContent=`arama ${s.arama}sn · üretim ${s.uretim}sn · toplam ${s.toplam}sn`;
+  cevapEl.innerHTML=isaretle(ham);          // yeşil/sarı işaretli yeniden render
+  // susma: hiç kaynak kullanılmadıysa uyar
+  if(!d.kaynaklar.some(k=>k.kullanildi))
+    cevapEl.innerHTML='<div class="susma">⚠ Bu soru, bulunan maddelerle net olarak cevaplanamadı. Aşağıdaki bilgi teyide muhtaçtır.</div>'+cevapEl.innerHTML;
+  // mülga uyarısı: kullanılan maddelerden biri yürürlükten kalkmışsa
+  document.getElementById('uyarimulga').className='uyari-mulga'+(d.kaynaklar.some(k=>k.kullanildi&&k.mulga)?' acik':'');
+  document.getElementById('arac').style.display='flex';
+  aciklamaEl.style.display='flex';
+  function acKart(kk){ if(!kk) return; kk.classList.add('acik'); const t=kk.querySelector('.k-tam'); if(t) t.style.display='block'; }
+  cevapEl.querySelectorAll('.atif').forEach(a=>a.onclick=()=>{
+    const t=document.getElementById('k'+a.dataset.no);
+    if(t){acKart(t); t.scrollIntoView({block:'center'}); t.style.transition='background .3s'; t.style.background='#efeaff'; setTimeout(()=>t.style.background='',900);}
+  });
+  const kul=d.kaynaklar.filter(k=>k.kullanildi);
+  let h='';
+  if(kul.length){ h+='<div class="bolum"><h2>Yanıtın dayandığı maddeler</h2>'; kul.forEach(k=>h+=kart(k)); h+='</div>'; }
+  h+=`<details><summary>Arama detayı — bulunan ${d.kaynaklar.length} madde (sıralı)</summary><div style="margin-top:12px">`;
+  d.kaynaklar.forEach(k=>h+=kart(k)); h+='</div></details>';
+  kEl.innerHTML=h;
+  // kaynak başlığına tıkla → tam metni aç/kapa (inline)
+  kEl.querySelectorAll('.k-bas').forEach(bs=>bs.onclick=()=>{
+    const kk=bs.closest('.kaynak'); const acik=kk.classList.toggle('acik');
+    const t=kk.querySelector('.k-tam'); if(t) t.style.display=acik?'block':'none';
+  });
+  gbEl.className='gb acik';                  // geri bildirim göster
+}
+function kart(k){
+  const url=k.belge?('/belge/'+encodeURIComponent(k.belge)+(k.chunk_id?('?vurgu='+encodeURIComponent(k.chunk_id)):'')):null;
+  const rz=(k.mulga?'<span class="rz rz-mulga">MÜLGA</span>':'')
+    +(k.degisik?'<span class="rz rz-degisik">DEĞİŞİK</span>':'')
+    +(k.kullanildi?'<span class="rz rz-kul">kullanıldı</span>':'');
+  const bas=`<div class="k-bas"><span class="k-ok">▸</span> <span class="no">[${k.no}]</span> `
+    +`<span class="ad">${esc(k.belge_ad||'')}</span>`
+    +(k.baslik?` <span class="bas">— ${esc(k.baslik)}</span>`:'')+rz+`</div>`;
+  // tıklayınca açılan tam metin (inline); içinde /belge (o maddeye atlar) linki
+  const tam=(k.govde||k.ozet||'').replace ? esc(k.govde||k.ozet||'').replace(/\n/g,'<br>') : '';
+  const ac=`<div class="k-tam" style="display:none">${tam}`
+    +(url?` <a class="k-link" href="${url}" target="_blank" rel="noopener">Belge sayfası →</a>`:'')+`</div>`;
+  const cls='kaynak'+(k.kullanildi?' kul':'')+(k.mulga?' mulga':'');
+  return `<div class="${cls}" id="k${k.no}">${bas}${ac}</div>`;
+}
+
+// Geri bildirim → sunucuya kaydet (gelecek değerlendirme seti)
+gbEl.querySelectorAll('.gb-btn').forEach(btn=>btn.onclick=()=>{
+  gbEl.querySelectorAll('.gb-btn').forEach(x=>x.classList.remove('sec'));
+  btn.classList.add('sec');
+  gonder(btn.dataset.v);
+});
+gbMadde.addEventListener('change',()=>{ const sec=gbEl.querySelector('.gb-btn.sec'); gonder(sec?sec.dataset.v:null); });
+function gonder(begeni){
+  fetch('/api/geri_bildirim',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({soru:sonSoru,cevap:sonCevap,alan:sonAlan,begeni:begeni,dogru_madde:gbMadde.value.trim()})})
+    .then(()=>{gbTsk.textContent='✓ teşekkürler';}).catch(()=>{});
+}
+
+// Örnek sorular → tıkla, sor
+document.querySelectorAll('.ornek').forEach(o=>o.onclick=()=>{ q.value=o.textContent; f.requestSubmit(); });
+
+// Soru geçmişi — localStorage (kalıcı, tarayıcıda kalır, sunucuya gitmez)
+function gecmisAl(){ try{return JSON.parse(localStorage.getItem('mv_gecmis')||'[]')}catch(e){return[]} }
+function gecmisKaydet(s){ let g=gecmisAl().filter(x=>x!==s); g.unshift(s); g=g.slice(0,5);
+  try{localStorage.setItem('mv_gecmis',JSON.stringify(g))}catch(e){} gecmisGoster(); }
+function gecmisGoster(){ const g=gecmisAl(), el=document.getElementById('gecmis'); el.innerHTML='';
+  if(!g.length) return;
+  const bas=document.createElement('div'); bas.className='gec-bas'; bas.textContent='Son sorular'; el.appendChild(bas);
+  g.forEach(s=>{ const btn=document.createElement('button'); btn.className='gec-c'; btn.textContent=s; btn.title=s;
+    btn.onclick=()=>{ q.value=s; f.requestSubmit(); }; el.appendChild(btn); });
+}
+gecmisGoster();
+
+// Kopyala — soru + cevabı panoya
+document.getElementById('kopyala').onclick=()=>{
+  const kb=document.getElementById('kopyala');
+  navigator.clipboard.writeText(sonSoru+'\n\n'+sonCevap).then(()=>{ kb.textContent='✓ Kopyalandı'; setTimeout(()=>kb.textContent='📋 Kopyala',1500); }).catch(()=>{});
+};
+// Açık/Koyu tema — localStorage'da kalıcı
+const temaBtn=document.getElementById('tema');
+function temaUygula(t){ document.documentElement.setAttribute('data-tema',t); temaBtn.textContent=(t==='koyu')?'☀️':'🌙'; }
+try{ if(localStorage.getItem('mv_tema')==='koyu') temaUygula('koyu'); }catch(e){}
+temaBtn.onclick=()=>{ const koyu=document.documentElement.getAttribute('data-tema')==='koyu';
+  const t=koyu?'acik':'koyu'; temaUygula(t); try{localStorage.setItem('mv_tema',t)}catch(e){} };
+</script>
+</body>
+</html>

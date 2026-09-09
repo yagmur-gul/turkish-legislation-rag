@@ -1,0 +1,26 @@
+# API anahtarı — ASLA git'e girmesin
+.env
+.env*
+
+# Python ortamı ve önbellek
+.venv/
+__pycache__/
+*.pyc
+
+# Çalışma-zamanı çıktıları
+cikti/geri_bildirim.jsonl
+cikti/soru_log.jsonl
+
+# BÜYÜK veri dosyaları (GitHub 100MB üstünü almaz)
+arama/mevzuat.db
+arama/vektorler_bge-m3.npy
+arama/vektor_ids_bge-m3.npy
+arama/ann_bge-m3.faiss
+cikti/maddeler.jsonl
+cikti/belgeler/
+
+# Veri dosyaları — bu depoda YALNIZ KOD paylaşılır
+cikti/katalog.jsonl
+cikti/degisiklikler.jsonl
+cikti/yururluk_kayitlari.jsonl
+degerlendirme/sorular.jsonl

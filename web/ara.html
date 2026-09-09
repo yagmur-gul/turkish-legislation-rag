@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mevzuat Arama</title>
+<style>
+  :root{--mor:#534AB7;--metin:#2C2C2A;--soluk:#6b6a66;--cizgi:#E2E0D8;--kart:#fff;--arka:#F7F6F1}
+  html[data-tema="koyu"]{--mor:#a99cf5;--metin:#e7e5df;--soluk:#a3a19a;--cizgi:#33333c;--kart:#1e1e24;--arka:#16161a}
+  .tema{position:fixed;top:14px;right:16px;background:var(--kart);border:1px solid var(--cizgi);color:var(--soluk);width:38px;height:38px;border-radius:9px;font-size:17px;cursor:pointer;line-height:1}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--arka);color:var(--metin);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.45}
+  .sar{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+  h1{font-size:22px;margin:0 0 2px}
+  .altbaslik{color:var(--soluk);font-size:13px;margin:0 0 20px}
+  form{display:flex;gap:8px;margin-bottom:8px}
+  input[type=text]{flex:1;border:1px solid var(--cizgi);border-radius:9px;padding:12px 14px;font-size:15px;background:var(--kart);color:var(--metin)}
+  input[type=text]:focus{outline:2px solid #C9C5F0;border-color:var(--mor)}
+  button{background:var(--mor);color:#fff;border:0;border-radius:9px;padding:0 20px;font-size:15px;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.55;cursor:default}
+  .secenek{font-size:13px;color:var(--soluk);display:flex;gap:6px;align-items:center;margin-bottom:18px}
+  .kopru{font-size:12.5px;color:var(--soluk);margin:0 0 14px}
+  .disc{font-size:12px;color:#8A6118;background:#FAF3DE;border:1px solid #EAD9A6;border-radius:6px;padding:6px 10px;margin:0 0 16px}
+  .cip{display:inline-block;background:#EEEDFE;color:#3C3489;border-radius:20px;padding:2px 9px;margin:2px 4px 2px 0;font-size:12px}
+  .durum{color:var(--soluk);font-size:14px;padding:22px 2px}
+  .kart{display:block;text-decoration:none;color:inherit;background:var(--kart);border:1px solid var(--cizgi);border-radius:11px;padding:14px 15px;margin-bottom:11px;cursor:pointer}
+  .kart:hover{border-color:#7F77DD}
+  .kbas{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .belge{font-size:12px;font-weight:700;color:var(--soluk);text-transform:uppercase;letter-spacing:.02em}
+  .rozet{font-size:11px;padding:2px 9px;border-radius:20px;white-space:nowrap}
+  .r-tur{background:#F1EFE8;color:#5F5E5A}
+  .r-mulga{background:#FCEBEB;color:#A32D2D;font-weight:700}
+  .r-arka{background:#EAF0F4;color:#3C5A6B}
+  .baslik{font-weight:700;margin:5px 0 4px;font-size:15px}
+  .ozet{font-size:14px;color:var(--metin)}
+  .uyari{font-size:13px;background:#FAEEDA;color:#854F0B;border-radius:7px;padding:8px 10px}
+  .uyari-bilgi{font-size:12.5px;color:#3C5A6B;background:#EEF3F6;border-radius:7px;padding:6px 10px;margin:2px 0}
+  .kaynak{font-size:12px;color:var(--mor);margin-top:8px;font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<button class="tema" id="tema" title="Açık/Koyu tema">🌙</button>
+<div class="sar">
+  <h1>Mevzuat Arama</h1>
+  <p class="altbaslik">Sorunu kendi dilinle yaz &mdash; ilgili maddeleri getirir. Bir sonuca t&#305;kla &rarr; tam belge a&ccedil;&#305;l&#305;r. &middot; <a href="/sor" style="color:var(--mor)">&larr; soru sor</a></p>
+  <form id="f">
+    <input type="text" id="q" placeholder="&ouml;r. ev sahibim beni evden &ccedil;&#305;karabilir mi?" autocomplete="off" autofocus>
+    <button id="btn" type="submit">Ara</button>
+  </form>
+  <label class="secenek">
+    <input type="checkbox" id="gizle"> M&uuml;lga (y&uuml;r&uuml;rl&uuml;kten kalkm&#305;&#351;) maddeleri gizle
+  </label>
+  <div class="disc">Sonuçların güncel yürürlük durumunu mevzuat.gov.tr'den teyit edin.</div>
+  <div id="kopru" class="kopru" hidden></div>
+  <div id="durum" class="durum">Aramak i&ccedil;in bir soru yaz.</div>
+  <div id="liste"></div>
+</div>
+<script>
+const f=document.getElementById('f'),q=document.getElementById('q'),
+      btn=document.getElementById('btn'),gizle=document.getElementById('gizle'),
+      durum=document.getElementById('durum'),liste=document.getElementById('liste'),
+      kopru=document.getElementById('kopru');
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+const TUR_ET={ek_hukum:'İşlenemeyen hüküm',cizelge:'Değişiklik çizelgesi'};
+function kartYap(r){
+  const cid=r.kaynak||'';
+  const belge=cid.split('#')[0];
+  const k=el('a','kart');
+  k.href='/belge/'+encodeURIComponent(belge)+'?vurgu='+encodeURIComponent(cid);
+  k.target='_blank';
+  const bas=el('div','kbas');
+  bas.appendChild(el('span','belge',r.belge_ad||'-'));
+  bas.appendChild(el('span','rozet '+(r.mulga?'r-mulga':'r-tur'),r.mulga?'MÜLGA':(r.belge_tur||'')));
+  if(TUR_ET[r.tur])bas.appendChild(el('span','rozet r-arka',TUR_ET[r.tur]));
+  k.appendChild(bas);
+  k.appendChild(el('div','baslik',TUR_ET[r.tur]||r.baslik));
+  if(r.tur==='ek_hukum'||r.tur==='cizelge')
+    k.appendChild(el('div','uyari-bilgi','Ana metne işlenememiş / çizelge kaydı — bilgi amaçlı, geçerlilik iddiası taşımaz.'));
+  if(r.mulga)k.appendChild(el('div','uyari','Bu madde yürürlükten kaldırılmıştır.'));
+  if(r.bozuk)k.appendChild(el('div','uyari','Bu madde bir tablo/liste içeriyor; düz metne düzgün çevrilemedi. Tam metin için belgeye bakın.'));
+  else k.appendChild(el('div','ozet',r.ozet));
+  k.appendChild(el('div','kaynak','kaynak: '+r.kaynak));
+  return k;
+}
+async function ara(){
+  const soru=q.value.trim();
+  if(!soru)return;
+  btn.disabled=true;liste.innerHTML='';kopru.hidden=true;
+  durum.textContent='Aranıyor…';durum.hidden=false;
+  try{
+    const u='/api/ara?q='+encodeURIComponent(soru)+'&gizle_mulga='+(gizle.checked?'1':'0');
+    const d=await (await fetch(u)).json();
+    if(d.hata){durum.textContent=d.hata;return;}
+    if(d.kopru&&d.kopru.length){
+      kopru.innerHTML='';kopru.appendChild(document.createTextNode('Aramanı kanun diliyle genişlettik: '));
+      d.kopru.forEach(t=>kopru.appendChild(el('span','cip',t)));
+      kopru.hidden=false;
+    }
+    if(!d.sonuclar.length){durum.textContent='Sonuç bulunamadı.';return;}
+    durum.hidden=true;
+    d.sonuclar.forEach(r=>liste.appendChild(kartYap(r)));
+  }catch(e){durum.textContent='Bağlantı hatası: '+e;}
+  finally{btn.disabled=false;}
+}
+f.addEventListener('submit',ev=>{ev.preventDefault();ara();});
+const temaBtn=document.getElementById('tema');
+function temaUygula(t){document.documentElement.setAttribute('data-tema',t);temaBtn.textContent=(t==='koyu')?'☀️':'🌙';}
+try{if(localStorage.getItem('mv_tema')==='koyu')temaUygula('koyu');}catch(e){}
+temaBtn.onclick=()=>{const koyu=document.documentElement.getAttribute('data-tema')==='koyu';const t=koyu?'acik':'koyu';temaUygula(t);try{localStorage.setItem('mv_tema',t)}catch(e){}};
+</script>
+</body>
+</html>

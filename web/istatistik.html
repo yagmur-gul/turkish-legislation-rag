@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İstatistik — Mevzuat Asistanı</title>
+<style>
+  :root{--bg:#f4f5f2;--panel:#fff;--ink:#1a2230;--soft:#5b6678;--line:#e3e5df;
+        --iyi:#2f6f4e;--iyi-bg:#e8f1eb;--kotu:#9a3838;--kotu-bg:#f6e8e6;--accent:#2f4a7c;}
+  @media(prefers-color-scheme:dark){:root{--bg:#12151b;--panel:#1a1e26;--ink:#e8ebf0;
+        --soft:#a7b0c2;--line:#2a303b;--iyi:#7fc9a0;--iyi-bg:#182a22;--kotu:#e39a95;
+        --kotu-bg:#2c1d1c;--accent:#8fb0e6;}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+  .wrap{max-width:720px;margin:0 auto;padding:clamp(1.2rem,4vw,2.6rem) 1.1rem}
+  h1{font-size:1.5rem;margin:0 0 .2rem}
+  .sub{color:var(--soft);margin:0 0 1.6rem;font-size:.95rem}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem}
+  .card .n{font-size:2.2rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .card .l{color:var(--soft);font-size:.85rem;margin-top:.2rem}
+  .card.iyi .n{color:var(--iyi)} .card.iyi{background:var(--iyi-bg)}
+  .card.kotu .n{color:var(--kotu)} .card.kotu{background:var(--kotu-bg)}
+  .bar{margin-top:1.4rem;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem}
+  .bar .t{font-size:.85rem;color:var(--soft);margin-bottom:.5rem}
+  .track{height:14px;border-radius:8px;background:var(--kotu-bg);overflow:hidden;display:flex}
+  .fill{background:var(--iyi);height:100%}
+  .bar .pct{font-size:1.4rem;font-weight:700;color:var(--iyi);margin-top:.5rem;font-variant-numeric:tabular-nums}
+  .foot{margin-top:1.4rem;color:var(--soft);font-size:.8rem}
+  a{color:var(--accent);text-decoration:none}
+  table{width:100%;border-collapse:collapse;margin-top:.6rem;font-size:.92rem}
+  th,td{text-align:left;padding:.5rem .35rem;border-bottom:1px solid var(--line)}
+  th{color:var(--soft);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  td.gi{color:var(--iyi)} td.gk{color:var(--kotu)}
+  tbody tr:last-child td{border-bottom:none}
+  .hata{color:var(--kotu);margin-top:1rem}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>İstatistik</h1>
+    <p class="sub">Mevzuat Asistanı — kullanım ve geri bildirim özeti</p>
+
+    <div class="grid">
+      <div class="card"><div class="n" id="soru">–</div><div class="l">toplam soru</div></div>
+      <div class="card"><div class="n" id="gb">–</div><div class="l">toplam geri bildirim</div></div>
+      <div class="card iyi"><div class="n" id="iyi">–</div><div class="l">👍 yeterli</div></div>
+      <div class="card kotu"><div class="n" id="kotu">–</div><div class="l">👎 yetersiz</div></div>
+    </div>
+
+    <div class="bar" id="oranKutu" hidden>
+      <div class="t">Memnuniyet (yeterli / toplam geri bildirim)</div>
+      <div class="track"><div class="fill" id="fill" style="width:0%"></div></div>
+      <div class="pct" id="oran">–</div>
+    </div>
+
+    <div class="bar" id="alanKutu" hidden>
+      <div class="t">Alan bazında (en çok sorulandan)</div>
+      <table id="alanTablo"><thead><tr><th>Alan</th><th style="text-align:right">Soru</th><th style="text-align:right">👍</th><th style="text-align:right">👎</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div class="hata" id="hata" hidden></div>
+    <p class="foot"><a href="/sor">← Soru sor</a> · veriler sunucuda anlık.</p>
+  </div>
+
+<script>
+fetch('/api/istatistik').then(r=>r.json()).then(d=>{
+  document.getElementById('soru').textContent = d.toplam_soru ?? 0;
+  document.getElementById('gb').textContent   = d.toplam_geribildirim ?? 0;
+  document.getElementById('iyi').textContent  = d.olumlu ?? 0;
+  document.getElementById('kotu').textContent = d.olumsuz ?? 0;
+  if(d.olumlu_oran != null){
+    document.getElementById('oranKutu').hidden = false;
+    document.getElementById('fill').style.width = d.olumlu_oran + '%';
+    document.getElementById('oran').textContent = '%' + d.olumlu_oran + ' yeterli';
+  }
+  const at = d.alanlar || [];
+  if(at.length){
+    document.getElementById('alanKutu').hidden = false;
+    document.querySelector('#alanTablo tbody').innerHTML = at.map(x =>
+      `<tr><td>${x.alan}</td><td class="num">${x.soru}</td>`+
+      `<td class="num gi">${x.olumlu||''}</td><td class="num gk">${x.olumsuz||''}</td></tr>`).join('');
+  }
+}).catch(e=>{
+  const h=document.getElementById('hata'); h.hidden=false;
+  h.textContent='İstatistik yüklenemedi: ' + e;
+});
+</script>
+</body>
+</html>

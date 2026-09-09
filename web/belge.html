@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__BASLIK__</title>
+<style>
+  :root{
+    --kagit:#FBFAF6; --murekkep:#1F1E1C; --soluk:#6B6862; --cizgi:#E5E1D8;
+    --vurgu-bg:#EDF3FB; --vurgu-kenar:#2F6FBF; --baglanti:#3C3489;
+    --ui:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--kagit);color:var(--murekkep);
+       font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.75}
+
+  .ust{position:sticky;top:0;z-index:5;background:rgba(251,250,246,.95);
+       border-bottom:1px solid var(--cizgi)}
+  .ust .ic{max-width:780px;margin:0 auto;padding:11px 22px;display:flex;
+           gap:16px;align-items:center;justify-content:space-between}
+  .geri{font-family:var(--ui);font-size:13px;color:var(--baglanti);
+        text-decoration:none;white-space:nowrap;font-weight:500}
+  .geri:hover{text-decoration:underline}
+  .ustad{font-family:var(--ui);font-size:12px;color:var(--soluk);
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+
+  .sar{max-width:780px;margin:0 auto;padding:40px 22px 160px}
+  .kapak{text-align:center;border-bottom:2px solid #D9D4C7;padding-bottom:26px;margin-bottom:10px}
+  .tur{font-family:var(--ui);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+       color:var(--soluk);margin-bottom:12px}
+  h1{font-size:23px;line-height:1.4;margin:0 0 14px;font-weight:700;letter-spacing:.01em}
+  .kunyeno{font-family:ui-monospace,monospace;font-size:11px;color:#A29D91;letter-spacing:.04em}
+  .yururluk{font-family:var(--ui);font-size:12.5px;color:#7A5A12;background:#FAF3DE;border:1px solid #EAD9A6;border-radius:6px;padding:8px 12px;margin:14px 0 0}
+  .yururluk a{color:#8A6118;font-weight:600}
+
+  section{padding:22px 0;border-bottom:1px solid var(--cizgi)}
+  section:last-child{border-bottom:0}
+  .madde h3{font-size:16.5px;margin:0 0 8px;font-weight:700;line-height:1.45}
+  .madde h3.sade{font-weight:600;color:var(--soluk)}
+  .govde{white-space:pre-wrap}\n  .metin p{margin:0 0 .62em}\n  .metin p:last-child{margin-bottom:0}\n  .metin p.s1{margin-top:.2em}\n  .metin p.s2{padding-left:1.9em}\n  .metin p.s3{padding-left:3.5em}\n  .ham{white-space:pre-wrap;font-size:15px;color:#4A473F}\n  .tablo-uyari{font-family:var(--ui);font-size:12.5px;background:#F4EEDE;\n               color:#7A5A12;padding:8px 12px;border-radius:4px;margin-bottom:12px}
+  .govde + .govde{margin-top:.35em}
+  .bolum{font-family:var(--ui);font-size:11px;letter-spacing:.16em;
+         text-transform:uppercase;color:#5A5750;text-align:center;
+         margin:26px 0 4px;padding-top:18px;border-top:1px solid var(--cizgi);font-weight:700}
+  .altbaslik{font-weight:700;font-size:16.5px;margin:20px 0 8px;line-height:1.45}\n  .bolum-ad{text-align:center;font-size:15.5px;font-weight:700;
+            margin:0 0 16px;color:var(--murekkep)}
+  .onsoz{color:var(--soluk);font-size:15px;white-space:pre-wrap;font-style:italic;
+         border-bottom:1px solid var(--cizgi)}
+  .arka-baslik{font-family:var(--ui);font-size:12px;letter-spacing:.14em;
+         text-transform:uppercase;color:#3C5A6B;font-weight:700;text-align:center;
+         margin:30px 0 2px;padding-top:20px;border-top:2px solid #D6E0E6}
+  .arka-baslik span{display:block;font-size:11px;letter-spacing:.02em;
+         text-transform:none;color:#7A8894;font-weight:400;margin-top:3px}
+  .arka{background:#F6F8FA;color:#3f3e3b}
+  .arka-metin{white-space:pre-wrap;font-size:15px;color:#3f3e3b;line-height:1.6}
+  .ciz-katla{margin-top:10px}
+  .ciz-katla summary{font-family:var(--ui);font-size:12.5px;color:#3C5A6B;cursor:pointer;
+         padding:6px 0;user-select:none}
+  .ciz-katla summary:hover{color:#26414F}
+  .cizelge-pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+         font-size:12px;color:#5A574F;line-height:1.5;margin:8px 0 0;overflow-x:auto;
+         background:#EEF2F5;padding:10px 12px;border-radius:6px}
+  .mulga{font-family:var(--ui);font-size:10px;letter-spacing:.07em;background:#F4E2E2;
+         color:#8E2C2C;padding:2px 8px;border-radius:3px;font-weight:700;
+         font-style:normal;vertical-align:middle;margin-left:8px}
+
+  .vurgu{background:var(--vurgu-bg);border-left:4px solid var(--vurgu-kenar);
+         padding:22px 24px;margin:0 -24px;border-radius:3px;border-bottom:0}
+  .vurgu-etiket{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.12em;
+       text-transform:uppercase;color:#1B5A9E;margin-bottom:10px;font-weight:700}
+
+  .not-kutu{background:#F4F3FB;border:1px solid #DAD6F0;border-radius:8px;
+            padding:11px 13px;margin:0 0 14px;font-family:var(--ui)}
+  .not-kutu-onem{background:#FCEEEE;border-color:#E7C3C3}
+  .not-baslik{font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+              color:#6b6a66;font-weight:700;margin-bottom:8px}
+  .not-kutu-onem .not-baslik{color:#A32D2D}
+  .not-satir{display:flex;gap:9px;align-items:baseline;margin:6px 0;font-size:13px;line-height:1.5}
+  .not-rozet{flex:none;font-size:9.5px;letter-spacing:.05em;font-weight:700;
+             padding:2px 7px;border-radius:3px;white-space:nowrap;margin-top:1px}
+  .not-iptal .not-rozet{background:#E7B9B9;color:#7A1E1E}
+  .not-degisik .not-rozet{background:#D8D4F0;color:#3C3489}
+  .not-atif .not-rozet{background:#E4E2DA;color:#5A5750}
+  .not-uygulama .not-rozet{background:#F0D9A6;color:#7A5A12}
+  .not-uygulama .not-metin{color:#6B4E12;font-weight:600}
+  .not-metin{color:#3A3833}
+  .not-iptal .not-metin{color:#5A2020;font-weight:600}
+  .not-asil{display:inline-block;background:#E7B9B9;color:#7A1E1E;font-weight:700;
+            font-size:11px;padding:1px 8px;border-radius:10px;margin-left:6px;letter-spacing:.02em}
+  .not-detay{font-size:12px;color:#5A5750;margin-top:3px;line-height:1.5;font-weight:400}
+  .not-dip{font-size:11px;color:#8A857C;margin-top:8px;font-style:italic}
+  .isaret{font-weight:700;color:#6B5A16}
+  .madde-no{font-weight:800;color:var(--metin)}
+  .not-kutu{margin-top:14px}
+
+  @media(max-width:640px){
+    body{font-size:16px}
+    .vurgu{margin:0 -14px;padding:18px 16px}
+    .not-satir{flex-direction:column;gap:3px}
+  }
+</style>
+</head>
+<body>
+<div class="ust"><div class="ic">
+  <a class="geri" href="/">&larr; Aramaya dön</a>
+  <span class="ustad">__BASLIK__</span>
+</div></div>
+<div class="sar">
+  <div class="kapak">
+    <div class="tur">__TUR__</div>
+    <h1>__BASLIK__</h1>
+    <div class="kunyeno">__KAYNAK__</div>
+    <div class="yururluk">Bu metinde <b>tablo/şekiller tam görünmeyebilir</b> ve içerik güncel olmayabilir — orijinali ve güncel durumu için <a href="__KAYNAK_URL__" target="_blank" rel="noopener">mevzuat.gov.tr'de açın</a>.</div>
+  </div>
+  __ICERIK__
+</div>
+<script>
+  const v=document.querySelector('.vurgu');
+  if(v){v.scrollIntoView({block:'center'});}
+</script>
+</body>
+</html>
